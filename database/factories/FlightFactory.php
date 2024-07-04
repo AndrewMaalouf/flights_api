@@ -20,8 +20,8 @@ class FlightFactory extends Factory
             'number' =>fake()->numberBetween(100, 10000),
             'departure_city' =>fake()->city(),
             'arrival_city' =>fake()->city(),
-            'departure_time' =>fake()->dateTime(),
-            'arrival_time' =>fake()->dateTime(),
+            'departure_time' =>fake()->dateTimeBetween('+1 Day', '+1 week'),
+            'arrival_time' =>fake()->dateTimeBetween('+1 week', '+2 weeks'),
 
         ];
     }
