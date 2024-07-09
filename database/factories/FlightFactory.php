@@ -16,13 +16,14 @@ class FlightFactory extends Factory
      */
     public function definition(): array
     {
+        $departureTime = fake()->dateTimeBetween('+1 day', '+1 week');
+        $arrivalTime = fake()->dateTimeBetween($departureTime, (clone $departureTime)->modify('+1 day'));
         return [
             'number' =>fake()->numberBetween(100, 10000),
             'departure_city' =>fake()->city(),
             'arrival_city' =>fake()->city(),
-            'departure_time' =>fake()->dateTimeBetween('+1 Day', '+1 week'),
-            'arrival_time' =>fake()->dateTimeBetween('+1 week', '+2 weeks'),
-
+            'departure_time' =>$departureTime,
+            'arrival_time' =>$arrivalTime
         ];
     }
 }

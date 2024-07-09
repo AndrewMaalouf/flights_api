@@ -9,7 +9,7 @@ class Passenger extends Model
 {
     use HasFactory;
 
-    public function flight(){
-        return $this->hasOne(Flight::class);
+    public function flights(){
+        return $this->belongsToMany(Flight::class);
     }
 }
