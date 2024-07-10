@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Flight;
 use App\Models\Passenger;
 use Illuminate\Http\Request;
+use League\MimeTypeDetection\FinfoMimeTypeDetector;
 
 class PassengerController extends Controller
 {
@@ -30,6 +32,13 @@ class PassengerController extends Controller
         $query->orderBy($sortField, $sortOrder);
      
         $passengers = $query->paginate(15);
+
+        return response()->json($passengers);
+    }
+
+    public function getPassengerByFlightId(Request $request, $flightId){
+        $flight = Flight::findOrFail($flightId);
+        $passengers = $flight->passengers()->paginate(15);
 
         return response()->json($passengers);
     }

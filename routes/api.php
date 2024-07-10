@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\FlightController;
 use App\Http\Controllers\PassengerController;
+use App\Models\Passenger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,3 +24,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/passengers', [PassengerController::class], 'index');
 
 Route::get('/flights', [FlightController::class], 'index');
+
+Route::get('flights/{flightId}/passengers', [PassengerController::class], 'getPassengerByFlightId');
