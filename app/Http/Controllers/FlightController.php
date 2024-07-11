@@ -8,42 +8,54 @@ use Illuminate\Http\Request;
 class FlightController extends Controller
 {
     //
-    public function index(Request $request){
-        $flightNumber = $request->query('number');
-        $departureCity = $request->query('departure_city');
-        $arrivalCity = $request->query('arrival_city');
-        $departureTime = $request->query('departure_time');
-        $arrivalTime = $request->query('arrival_time');
-        $sortField = $request->query('sort_field', 'departure_time'); 
-        $sortOrder = $request->query('sort_order', 'asc'); 
-
-
-        $query = Flight::query();
-
-        if ($flightNumber) {
-            $query->where('number', 'like', "$flightNumber");
-        }
-
-        if ($departureCity) {
-            $query->where('departure_city', 'like', "$departureCity");
-        }
-
-        if ($arrivalCity) {
-            $query->where('arrival_city', 'like', "$arrivalCity");
-        }
-
-        if ($departureTime) {
-            $query->whereDate('departure_time', $departureTime);
-        }
-
-        if ($arrivalTime) {
-            $query->whereDate('arrival_time', $arrivalTime);
-        }
-
-        $query->orderBy($sortField, $sortOrder);
-
-        $flights = $query->paginate(15); 
-
+    public function index(){
+        $flights = Flight::get();
+    
         return response()->json($flights);
     }
+
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'number' => 'required|string|max:255|unique:flights',
+            'departure_city' => 'required|string|max:255',
+            'arrival_city' => 'required|string|max:255',
+            'departure_time' => 'required|date',
+            'arrival_time' => 'required|date',
+        ]);
+
+        $flight = Flight::create($validatedData);
+
+        return response()->json($flight, 201); 
+    }
+
+    public function show($id){
+        $flight = Flight::findOrFail($id);
+
+        return response()->json($flight);
+    }
+
+    public function update(Request $request, $id){
+        $validatedData = $request->validate([
+            'number' => 'sometimes|string|max:255|unique:flights,number,' . $id,
+            'departure_city' => 'sometimes|string|max:255',
+            'arrival_city' => 'sometimes|string|max:255',
+            'departure_time' => 'sometimes|date',
+            'arrival_time' => 'sometimes|date',
+        ]);
+
+        $flight = Flight::findOrFail($id);
+        $flight->update($validatedData);
+
+        return response()->json($flight);
+    }
+
+    public function destroy($id)
+    {
+        $flight = Flight::findOrFail($id);
+        $flight->delete();
+
+        return response()->json(null, 204); 
+    }
+    
 }
