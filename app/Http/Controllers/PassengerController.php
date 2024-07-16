@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Flight;
 use App\Models\Passenger;
 use Illuminate\Http\Request;
-use League\MimeTypeDetection\FinfoMimeTypeDetector;
 use Spatie\QueryBuilder\QueryBuilder;
 
 
@@ -15,21 +14,23 @@ class PassengerController extends Controller
     {
         $passengers = QueryBuilder::for(Passenger::class)
         ->allowedFilters([
-            'id',
+            // 'id',
             'first_name',
-            'last_name',
-            'email',
-            'dob',
-            'passport_expiry_date'
+            // 'last_name',
+            // 'email',
+            // 'dob',
+            // 'passport_expiry_date'
         ])
         ->allowedSorts([
+            // 'first_name'
             'id'
         ])
-        ->paginate(10)
-        ->get();
+        ->paginate()
+        ->appends(request()->query());
 
     return response()->json($passengers);
     }
+
 
     public function store(Request $request){
         $validatedData = $request->validate([
@@ -47,6 +48,8 @@ class PassengerController extends Controller
 
         return response()->json($passenger, 201); 
     }
+
+
 
     public function update(Request $request, $id){
         $validatedData = $request->validate([
@@ -68,6 +71,8 @@ class PassengerController extends Controller
         return response()->json($passenger);
     }
 
+
+
     public function destroy($id){
         $passenger = Passenger::findOrFail($id);
         $passenger->delete();
@@ -75,11 +80,15 @@ class PassengerController extends Controller
         return response()->json(null, 204);
     }
 
+
+
     public function show($id){
         $passenger = Passenger::findOrFail($id);
 
         return response()->json($passenger);
     }
+
+
 
     public function getPassengerByFlightId(Request $request, $flightId){
         $flight = Flight::findOrFail($flightId);

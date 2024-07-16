@@ -6,29 +6,44 @@ use App\Models\Flight;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 
+use Illuminate\Support\Facades\Log;
+
+
 class FlightController extends Controller
 {
+
     //
-    public function index(){
-        $flights = QueryBuilder::for(Flight::class)
-        ->allowedFilters([
-            'id',
-            'number',
-            'departure_city',
-            'arrival_city',
-            'departure_time',
-            'arrival_time'
-        ])
-        ->allowedSorts([
-            'number'
-        ])
-        ->paginate(10)
-        ->get();
+    public function index()
+    {
+        try {
+            $flights = QueryBuilder::for(Flight::class)
+                ->allowedFilters([
+                    'id',
+                    // 'number',
+                    // 'departure_city',
+                    // 'arrival_city',
+                    // 'departure_time',
+                    // 'arrival_time'
+                ])
+                ->allowedSorts([
+                    'id',
+                ])
+                
+                ->paginate();
+               
+            if ($flights->isEmpty()) {
+                return response()->json(['message' => 'No flights found'], 404);
+            }
 
-        return response()->json($flights);
-
-
+            return response()->json($flights);
+        } catch (\Exception $e) {
+            $errorMessage = 'Error fetching flights: ' . $e->getMessage();
+            Log::error($errorMessage);
+            return response()->json(['error' => $errorMessage], 500);
+        }
     }
+
+
 
     public function store(Request $request)
     {
@@ -44,6 +59,8 @@ class FlightController extends Controller
 
         return response()->json($flight, 201); 
     }
+
+
 
     public function show($id){
         $flight = Flight::findOrFail($id);
@@ -65,6 +82,8 @@ class FlightController extends Controller
 
         return response()->json($flight);
     }
+
+
 
     public function destroy($id)
     {
