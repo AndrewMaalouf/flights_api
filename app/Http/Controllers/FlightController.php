@@ -4,14 +4,30 @@ namespace App\Http\Controllers;
 
 use App\Models\Flight;
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class FlightController extends Controller
 {
     //
     public function index(){
-        $flights = Flight::get();
-    
+        $flights = QueryBuilder::for(Flight::class)
+        ->allowedFilters([
+            'id',
+            'number',
+            'departure_city',
+            'arrival_city',
+            'departure_time',
+            'arrival_time'
+        ])
+        ->allowedSorts([
+            'number'
+        ])
+        ->paginate(10)
+        ->get();
+
         return response()->json($flights);
+
+
     }
 
     public function store(Request $request)

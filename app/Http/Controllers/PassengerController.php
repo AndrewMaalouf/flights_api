@@ -6,14 +6,29 @@ use App\Models\Flight;
 use App\Models\Passenger;
 use Illuminate\Http\Request;
 use League\MimeTypeDetection\FinfoMimeTypeDetector;
+use Spatie\QueryBuilder\QueryBuilder;
+
 
 class PassengerController extends Controller
 {
     public function index()
     {
-        $passengers = Passenger::get();
-    
-        return response()->json($passengers);
+        $passengers = QueryBuilder::for(Passenger::class)
+        ->allowedFilters([
+            'id',
+            'first_name',
+            'last_name',
+            'email',
+            'dob',
+            'passport_expiry_date'
+        ])
+        ->allowedSorts([
+            'id'
+        ])
+        ->paginate(10)
+        ->get();
+
+    return response()->json($passengers);
     }
 
     public function store(Request $request){
