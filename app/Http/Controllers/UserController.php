@@ -17,7 +17,7 @@ class UserController extends Controller
     public function store(Request $request){
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:passengers',
+            'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
         ]);
 
@@ -41,9 +41,9 @@ class UserController extends Controller
             'password' => 'sometimes|string|min:8',
         ]);
     
-        if (isset($validatedData['password'])) {
-            $validatedData['password'] = bcrypt($validatedData['password']);
-        }
+        // if (isset($validatedData['password'])) {
+        //     $validatedData['password'] = bcrypt($validatedData['password']);
+        // }
     
         $user = User::findOrFail($id);
         $user->update($validatedData);
