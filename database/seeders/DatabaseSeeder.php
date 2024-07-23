@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
         $this->call(PassengerSeeder::class, FlightSeeder::class);
+
+        $this->call(RoleSeeder::class);
        
         Flight::factory()->count(20)->create();
         Passenger::factory()->count(30)->create();
