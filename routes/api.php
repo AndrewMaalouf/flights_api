@@ -48,3 +48,6 @@ Route::post('auth/logout', [AuthController::class, 'logout'])->middleware('auth:
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::apiResource('users', UserController::class);
 });
+
+
+Route::get('export-users', [UserController::class, 'export']);
