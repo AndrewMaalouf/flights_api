@@ -22,9 +22,9 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
-        $this->call(PassengerSeeder::class, FlightSeeder::class);
+        $this->call([PassengerSeeder::class, FlightSeeder::class, RoleSeeder::class]);
 
-        $this->call(RoleSeeder::class);
+        // $this->call(RoleSeeder::class);
        
         Flight::factory()->count(20)->create();
         Passenger::factory()->count(30)->create();
