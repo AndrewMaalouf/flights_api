@@ -5,28 +5,34 @@ namespace App\Http\Controllers;
 use App\Models\Flight;
 use App\Models\Passenger;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Spatie\QueryBuilder\QueryBuilder;
 
 
 class PassengerController extends Controller
 {
-    public function index()
-    {
-        $passengers = QueryBuilder::for(Passenger::class)
-        ->allowedFilters([
-            // 'id',
-            'first_name',
-            // 'last_name',
-            // 'email',
-            // 'dob',
-            // 'passport_expiry_date'
-        ])
-        ->allowedSorts([
-            // 'first_name'
-            'id'
-        ])
-        ->paginate()
-        ->appends(request()->query());
+    public function index(){
+
+        $cacheKey = "passenger_results";
+
+        $passengers = Cache::remember($cacheKey,now()->addMinutes(10) ,function(){
+               return QueryBuilder::for(Passenger::class)
+                    ->allowedFilters([
+                    // 'id',
+                    'first_name',
+                    // 'last_name',
+                    // 'email',
+                    // 'dob',
+                    // 'passport_expiry_date'
+                ])
+                    ->allowedSorts([
+                    // 'first_name'
+                    'id'
+                ])
+                    ->paginate()
+                    ->appends(request()->query());
+        }) ;
+        
 
     return response()->json($passengers);
     }

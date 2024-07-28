@@ -42,7 +42,7 @@ Route::get('/flights/{flightId}/passengers', [PassengerController::class], 'getP
 //     });
 // });
 
-Route::post('auth/login', [AuthController::class, 'login']);
+Route::post('auth/login', [AuthController::class, 'login'])->middleware('throttle:3,1');
 Route::post('auth/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
